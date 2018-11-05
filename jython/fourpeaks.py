@@ -57,22 +57,58 @@ hcp = GenericHillClimbingProblem(ef, odd, nf)
 gap = GenericGeneticAlgorithmProblem(ef, odd, mf, cf)
 pop = GenericProbabilisticOptimizationProblem(ef, odd, df)
 
-rhc = RandomizedHillClimbing(hcp)
-fit = FixedIterationTrainer(rhc, 200000)
-fit.train()
-print "RHC: " + str(ef.value(rhc.getOptimal()))
+iterations = range(100, 50000, 100)
+rhc_results = []
+sa_results = []
+ga_results = []
 
-sa = SimulatedAnnealing(1E11, .95, hcp)
-fit = FixedIterationTrainer(sa, 200000)
-fit.train()
-print "SA: " + str(ef.value(sa.getOptimal()))
+import time
 
-ga = StandardGeneticAlgorithm(200, 100, 10, gap)
-fit = FixedIterationTrainer(ga, 1000)
-fit.train()
-print "GA: " + str(ef.value(ga.getOptimal()))
+rhc_startTime = time.time()
+for iteration in iterations:
+    rhc = RandomizedHillClimbing(hcp)
+    fit = FixedIterationTrainer(rhc, iteration)
+    fit.train()
+    rhc_optimalVal = ef.value(rhc.getOptimal())
+    # print "RHC: " + str(rhc_optimalVal)
+    rhc_results.append(rhc_optimalVal)
+rhc_endTime = time.time()
+print "RHC Completed in: " + str(rhc_endTime - rhc_startTime)
 
-mimic = MIMIC(200, 20, pop)
-fit = FixedIterationTrainer(mimic, 1000)
-fit.train()
-print "MIMIC: " + str(ef.value(mimic.getOptimal()))
+sa_startTime = time.time()
+for iteration in iterations:
+    sa = SimulatedAnnealing(1E11, .95, hcp)
+    fit = FixedIterationTrainer(sa, iteration)
+    fit.train()
+    sa_optimalVal = ef.value(sa.getOptimal())
+    # print "SA: " + str(sa_optimalVal)
+    sa_results.append(sa_optimalVal)
+sa_endTime = time.time()
+print "SA Completed in: " + str(sa_endTime - sa_startTime)
+
+ga_startTime = time.time()
+for iteration in iterations:
+    ga = StandardGeneticAlgorithm(200, 100, 10, gap)
+    fit = FixedIterationTrainer(ga, iteration)
+    fit.train()
+    ga_optimalVal = ef.value(ga.getOptimal())
+    # print "GA: " + str(ga_optimalVal)
+    ga_results.append(ga_optimalVal)
+ga_endTime = time.time()
+print "GA Completed in: " + str(ga_endTime - ga_startTime)
+
+import pickle
+with open("fp_rhc.pickle", 'wb') as pfile:
+    pickle.dump(rhc_results, pfile, pickle.HIGHEST_PROTOCOL)
+
+with open("fp_sa.pickle", 'wb') as pfile:
+    pickle.dump(sa_results, pfile, pickle.HIGHEST_PROTOCOL)
+
+with open("fp_ga.pickle", 'wb') as pfile:
+    pickle.dump(ga_results, pfile, pickle.HIGHEST_PROTOCOL)
+
+with open("fp_iterations.pickle", 'wb') as pfile:
+    pickle.dump(iterations, pfile, pickle.HIGHEST_PROTOCOL)
+
+
+

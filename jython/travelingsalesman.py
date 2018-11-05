@@ -1,6 +1,6 @@
 # traveling salesman algorithm implementation in jython
 # This also prints the index of the points of the shortest route.
-# To make a plot of the route, write the points at these indexes 
+# To make a plot of the route, write the points at these indexes
 # to a file and plot them in your favorite tool.
 import sys
 import os
@@ -73,57 +73,70 @@ cf = TravelingSalesmanCrossOver(ef)
 hcp = GenericHillClimbingProblem(ef, odd, nf)
 gap = GenericGeneticAlgorithmProblem(ef, odd, mf, cf)
 
-rhc = RandomizedHillClimbing(hcp)
-fit = FixedIterationTrainer(rhc, 200000)
-fit.train()
-print "RHC Inverse of Distance: " + str(ef.value(rhc.getOptimal()))
-print "Route:"
-path = []
-for x in range(0,N):
-    path.append(rhc.getOptimal().getDiscrete(x))
-print path
+iterations = range(1000, 50000, 5000)
+rhc_results = []
+sa_results = []
+ga_results = []
 
-sa = SimulatedAnnealing(1E12, .999, hcp)
-fit = FixedIterationTrainer(sa, 200000)
-fit.train()
-print "SA Inverse of Distance: " + str(ef.value(sa.getOptimal()))
-print "Route:"
-path = []
-for x in range(0,N):
-    path.append(sa.getOptimal().getDiscrete(x))
-print path
+import time
 
+rhc_startTime = time.time()
+for iteration in iterations:
+    rhc = RandomizedHillClimbing(hcp)
+    fit = FixedIterationTrainer(rhc, iteration)
+    fit.train()
+    rhc_optimalVal = ef.value(rhc.getOptimal())
+    # print "RHC Inverse of Distance: " + str(ef.value(rhc.getOptimal()))
+    # print "Route:"
+    # path = []
+    # for x in range(0,N):
+    #     path.append(rhc.getOptimal().getDiscrete(x))
+    # print path
+    rhc_results.append(rhc_optimalVal)
+rhc_endTime = time.time()
+print "RHC Completed in: " + str(rhc_endTime - rhc_startTime)
 
-ga = StandardGeneticAlgorithm(2000, 1500, 250, gap)
-fit = FixedIterationTrainer(ga, 1000)
-fit.train()
-print "GA Inverse of Distance: " + str(ef.value(ga.getOptimal()))
-print "Route:"
-path = []
-for x in range(0,N):
-    path.append(ga.getOptimal().getDiscrete(x))
-print path
+sa_startTime = time.time()
+for iteration in iterations:
+    sa = SimulatedAnnealing(1E12, .999, hcp)
+    fit = FixedIterationTrainer(sa, iteration)
+    fit.train()
+    sa_optimalVal = ef.value(sa.getOptimal())
+    # print "SA Inverse of Distance: " + str(ef.value(sa.getOptimal()))
+    # print "Route:"
+    # path = []
+    # for x in range(0,N):
+    #     path.append(sa.getOptimal().getDiscrete(x))
+    # print path
+    sa_results.append(sa_optimalVal)
+sa_endTime = time.time()
+print "SA Completed in: " + str(sa_endTime - sa_startTime)
 
+ga_startTime = time.time()
+for iteration in iterations:
+    ga = StandardGeneticAlgorithm(2000, 1500, 250, gap)
+    fit = FixedIterationTrainer(ga, iteration)
+    fit.train()
+    ga_optimalVal = ef.value(ga.getOptimal())
+    # print "GA Inverse of Distance: " + str(ef.value(ga.getOptimal()))
+    # print "Route:"
+    # path = []
+    # for x in range(0,N):
+    #     path.append(ga.getOptimal().getDiscrete(x))
+    # print path
+    ga_results.append(ga_optimalVal)
+ga_endTime = time.time()
+print "GA Completed in: " + str(ga_endTime - ga_startTime)
 
-# for mimic we use a sort encoding
-ef = TravelingSalesmanSortEvaluationFunction(points);
-fill = [N] * N
-ranges = array('i', fill)
-odd = DiscreteUniformDistribution(ranges);
-df = DiscreteDependencyTree(.1, ranges); 
-pop = GenericProbabilisticOptimizationProblem(ef, odd, df);
+import pickle
+with open("tsp_rhc_5000.pickle", 'wb') as pfile:
+    pickle.dump(rhc_results, pfile, pickle.HIGHEST_PROTOCOL)
 
-mimic = MIMIC(500, 100, pop)
-fit = FixedIterationTrainer(mimic, 1000)
-fit.train()
-print "MIMIC Inverse of Distance: " + str(ef.value(mimic.getOptimal()))
-print "Route:"
-path = []
-optimal = mimic.getOptimal()
-fill = [0] * optimal.size()
-ddata = array('d', fill)
-for i in range(0,len(ddata)):
-    ddata[i] = optimal.getContinuous(i)
-order = ABAGAILArrays.indices(optimal.size())
-ABAGAILArrays.quicksort(ddata, order)
-print order
+with open("tsp_sa_5000.pickle", 'wb') as pfile:
+    pickle.dump(sa_results, pfile, pickle.HIGHEST_PROTOCOL)
+
+with open("tsp_ga_5000.pickle", 'wb') as pfile:
+    pickle.dump(ga_results, pfile, pickle.HIGHEST_PROTOCOL)
+
+with open("tsp_iterations_5000.pickle", 'wb') as pfile:
+    pickle.dump(iterations, pfile, pickle.HIGHEST_PROTOCOL)

@@ -9,5 +9,10 @@ ABAGAIL.jar
 *.ear
 manifest.mf
 /bin
+*.pickle
+*.docx
+wine_test2.py
+*.ser
+.vscode/
 
 *.java~
