@@ -109,6 +109,3 @@ with open("fp_ga.pickle", 'wb') as pfile:
 
 with open("fp_iterations.pickle", 'wb') as pfile:
     pickle.dump(iterations, pfile, pickle.HIGHEST_PROTOCOL)
-
-
-

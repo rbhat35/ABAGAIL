@@ -1,6 +1,6 @@
 """
 Implementation of randomized hill climbing, simulated annealing, and genetic algorithm to
-find optimal weights to a neural network that is classifying winequality-red.
+find optimal weights to a neural network that is classifying pima diabetes dataset.
 
 Based on AbaloneTest.java by Hannah Lau
 """
@@ -95,7 +95,7 @@ def train(oa, network, oaName, instances, measure, TRAINING_ITERATIONS=2000):
 
 
 def main():
-    """Run algorithms on the winequality-red dataset."""
+    """Run algorithms on the diabetes dataset."""
 
     learningCurve_data = {}
     learning_curve_file = "NN_learning.pickle"
@@ -305,6 +305,7 @@ def main():
 
         print "------------------------------------------------------------"
 
+    import pickle
     with open("NN_learningCurveAccuracy.pickle", 'wb') as file:
         pickle.dump(learningCurve_data, file, pickle.HIGHEST_PROTOCOL)
 

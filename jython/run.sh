@@ -4,9 +4,9 @@
 export CLASSPATH=../ABAGAIL.jar:$CLASSPATH
 mkdir -p data/plot logs image
 
-# # four peaks
-# echo "four peaks"
-# jython fourpeaks.py
+# four peaks
+echo "four peaks"
+jython fourpeaks.py
 
 # # count ones
 # echo "count ones"
@@ -21,17 +21,13 @@ mkdir -p data/plot logs image
 # jython knapsack.py
 
 # wine test
-echo "Running wine test"
-jython wine_test.py
-
-# # wine2 test
-# echo "Running wine2 test"
-# jython wine_test2.py
+echo "Running diabetes test"
+jython diabetes_test.py
 
 # abalone test
 # echo "Running abalone test"
 # jython abalone_test.py
 
-# # traveling salesman
-# echo "Running traveling salesman test"
-# jython travelingsalesman.py
+# traveling salesman
+echo "Running traveling salesman test"
+jython travelingsalesman.py
